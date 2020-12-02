@@ -40,7 +40,7 @@
 
         <!-- Disco ad esempio -->
         <div v-for="film in films" class="film">
-          <img src="" alt="">
+          <img :src="imgPreUrl + film.poster_path" :alt="'poster ' + film.title">
           <h3>{{ film.title }}</h3>
           <span class="originalTitle">Original Title: {{ film.original_title }}</span>
           <span class="language">Language: {{ film.original_language }}</span>

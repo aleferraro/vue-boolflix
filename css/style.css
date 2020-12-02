@@ -44,13 +44,14 @@ header {
     flex-basis: 200px;
     padding: 20px;
     margin: 10px 20px;
-    height: 360px;
+    height: 550px;
     background: rgb(46, 58, 70);
     text-align: center;
 }
 
 .film img {
-    max-width: 100%;
+    width: 160px;
+    height: 240px;
 }
 
 .film h3 {

@@ -5,11 +5,12 @@ Creare un layout base con una searchbar (una input e un button) in cui possiamo 
 */
 
 const apiUrl = 'https://api.themoviedb.org/3';
-const apiKey = '416bf9524c5b7afc9a621dd41c6691ea'
+const apiKey = '416bf9524c5b7afc9a621dd41c6691ea';
 
 const myApp = new Vue ({
   el: "#root",
   data: {
+    imgPreUrl: 'https://image.tmdb.org/t/p/w500',
     films: [],
     query: ''
   },
