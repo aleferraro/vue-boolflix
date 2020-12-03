@@ -11,9 +11,10 @@ body {
 }
 
 .container {
-    width: 1070px;
+    /* max-width: 1070px; */
     height: 100%;
     margin: 0 auto;
+    padding: 1rem;
 }
 
 header {
@@ -28,7 +29,11 @@ header {
   align-items: center;
 }
 
-.films-container {
+.nav > h1 {
+  color: red;
+}
+
+.movies-container {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -36,7 +41,7 @@ header {
     padding: 100px 0;
 }
 
-.film {
+.movie {
     display: flex;
     justify-content: flex-start;
     align-items: center;
@@ -47,24 +52,33 @@ header {
     height: 550px;
     background: rgb(46, 58, 70);
     text-align: center;
+    overflow: hidden;
+    overflow-y: auto;
+    text-overflow: ellipsis;
 }
 
-.film img {
+.movie img {
     width: 160px;
     height: 240px;
 }
 
-.film h3 {
+.movie h3 {
     margin: 20px 0;
     color: white;
     font-size: 22px;
     text-transform: uppercase;
 }
 
-.film span {
+.movie span {
     color: grey;
 }
 
-.film span.originalTitle {
+.movie img.flagIcon {
+  width: 16px;
+  height: 16px;
+  vertical-align: middle;
+}
+
+.movie span.originalTitle {
   font-size: 20px;
 }
