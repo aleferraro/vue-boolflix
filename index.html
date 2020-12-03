@@ -31,33 +31,65 @@
         <div class="container nav">
           <h1>BOOLFLIX</h1>
           <div action="search">
-            <input v-model="query" @keyup.enter="searchMovie" type="text" placeholder="cerca movie">
-            <button @click="searchMovie">Search</button>
+            <input v-model="query" @keyup.enter="searchMovie(); searchTvShows();" type="text" placeholder="cerca film o serie tv">
+            <button @click="searchMovie(); searchTvShows();">Cerca</button>
           </div>
         </div>
       </header>
-      <div class="movies-container container">
+      <main>
+        <div class="cards-container container">
+          <!-- Contiene i film -->
+          <h1 class="title" v-if="movies.length > 0">Film</h1>
 
-        <!-- Film ad esempio -->
-        <div v-for="movie in movies" class="movie">
-          <img v-if="movie.poster_path" :src="imgPreUrl + movie.poster_path" :alt="'poster ' + movie.title">
-          <img v-else-if="movie.backdrop_path" :src="imgPreUrl + movie.backdrop_path" :alt="'poster ' + movie.title">
-          <img v-else src="img/placeholder-image.png" alt="Image not found">
-          <h3>{{ movie.title }}</h3>
-          <span class="originalTitle">Titolo Originale: {{ movie.original_title }}</span>
-          <span class="language">Language:
-            <img @error="flagNotFound" class="flagIcon" :src="'img/flags/' + movie.original_language + '.svg'" :alt="movie.original_language">
-          </span>
-          <span class="vote">
-            <template v-for="n in 5">
-              <i v-if="n <= movie.vote_average" class="fas fa-star"></i>
-              <i v-else="n > movie.vote_average" class="far fa-star"></i>
-            </template>
-          </span>
+          <div v-for="movie in movies" class="card">
+            <img class="poster" v-if="movie.poster_path" :src="imgPreUrl + movie.poster_path" :alt="'poster ' + movie.title">
+            <img class="poster" v-else-if="movie.backdrop_path" :src="imgPreUrl + movie.backdrop_path" :alt="'poster ' + movie.title">
+            <img class="poster" v-else src="img/placeholder-image.jpg" alt="Image not found">
+            <h3>{{ movie.title }}</h3>
+            <span class="originalTitle grey"><span class="white">Titolo Originale:</span> "{{ movie.original_title }}"</span>
+            <span class="grey"><span class="white">Lingua:</span>
+              <img @error="flagNotFound" class="flagIcon" :src="'img/flags/' + movie.original_language + '.svg'" :alt="movie.original_language">
+            </span>
+            <span class="grey">
+              <span class="vote white">Voto:</span>
+              <template v-for="n in 5">
+                <i v-if="n <= movie.vote_average" class="fas fa-star"></i>
+                <i v-else="n > movie.vote_average" class="far fa-star"></i>
+              </template>
+            </span>
+            <span v-if="movie.overview" class="overview grey">
+              <span class="white">Overview:</span> {{ movie.overview }}
+            </span>
+          </div>
+        </div>
+
+        <div class="cards-container container">
+          <!-- Contiene le serie TV -->
+          <h1 class="title" v-if="tvShows.length > 0">Serie TV</h1>
+
+          <div v-for="tvShow in tvShows" class="card">
+            <img class="poster" v-if="tvShow.poster_path" :src="imgPreUrl + tvShow.poster_path" :alt="'poster ' + tvShow.name">
+            <img class="poster" v-else-if="tvShow.backdrop_path" :src="imgPreUrl + tvShow.backdrop_path" :alt="'poster ' + tvShow.name">
+            <img class="poster" v-else src="img/placeholder-image.jpg" alt="Image not found">
+            <h3>{{ tvShow.name }}</h3>
+            <span class="originalTitle grey"><span class="white">Titolo Originale:</span> "{{ tvShow.original_name }}"</span>
+            <span class="grey"><span class="white">Lingua:</span>
+              <img @error="flagNotFound" class="flagIcon" :src="'img/flags/' + tvShow.original_language + '.svg'" :alt="tvShow.original_language">
+            </span>
+            <span class="grey">
+              <span class="vote white">Voto:</span>
+              <template v-for="n in 5">
+                <i v-if="n <= tvShow.vote_average" class="fas fa-star"></i>
+                <i v-else="n > tvShow.vote_average" class="far fa-star"></i>
+              </template>
+            </span>
+            <span v-if="tvShow.overview" class="overview grey">
+              <span class="white">Overview:</span> {{ tvShow.overview }}
+            </span>
+          </div>
         </div>
       </div>
-    </div>
-
+    </main>
 
     <!-- Custom JavaScript -->
     <script src="js/main.js" charset="utf-8"></script>

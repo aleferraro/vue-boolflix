@@ -1,7 +1,7 @@
 /*
 Milestone 1
 
-Creare un layout base con una searchbar (una input e un button) in cui possiamo scrivere completamente o parzialmente il nome di un movie. Possiamo, cliccando il bottone, cercare sull’API tutti i movie che contengono ciò che ha scritto l’utente. Vogliamo dopo la risposta dell’API visualizzare a schermo i seguenti valori per ogni movie trovato: Titolo Titolo Originale Lingua Voto
+Creare un layout base con una searchbar (una input e un button) in cui possiamo scrivere completamente o parzialmente il nome di un movie. Possiamo, cliccando il bottone, cercare sull’API tutti i movie che contengono ciò che ha scritto l’utente. Vogliamo dopo la risposta dell’API visualizzare a schermo i seguenti valori per ogni movie trovato: Titolo, Titolo Originale, Lingua, Voto
 
 Milestone 2
 
@@ -13,6 +13,20 @@ Allarghiamo poi la ricerca anche alle serie tv. Con la stessa azione di ricerca 
 Qui un esempio di chiamata per le serie tv:
 https://api.themoviedb.org/3/search/tv?api_key=e99307154c6dfb0b4750f6603256716d&language=it_IT&query=scrubs
 
+Milestone 3
+
+In questa milestone come prima cosa aggiungiamo la copertina del film o della serie al nostro elenco. Ci viene passata dall’API solo la parte finale dell’URL, questo perché poi potremo generare da quella porzione di URL tante dimensioni diverse. Dovremo prendere quindi l’URL base delle immagini di TMDB: https://image.tmdb.org/t/p/ per poi aggiungere la dimensione che vogliamo generare (troviamo tutte le dimensioni possibili a questo link: https://www.themoviedb.org/talk/53c11d4ec3a3684cf4006400) per poi aggiungere la parte finale dell’URL passata dall’API.
+Esempio di URL che torna la copertina di BORIS:
+https://image.tmdb.org/t/p/w185/s2VDcsMh9ZhjFUxw77uCFDpTuXp.jpg
+
+
+Milestone 4
+
+Trasformiamo quello che abbiamo fatto fino ad ora in una vera e propria webapp, creando un layout completo simil-Netflix:
+- Un header che contiene logo e search bar
+- Dopo aver ricercato qualcosa nella searchbar, i risultati appaiono sotto forma di “card” in cui lo sfondo è rappresentato dall’immagine di copertina (consiglio la poster_path con w342)
+- Andando con il mouse sopra una card (on hover), appaiono le informazioni aggiuntive già prese nei punti precedenti più la overview
+
 */
 
 const apiUrl = 'https://api.themoviedb.org/3';
@@ -22,7 +36,7 @@ const language = 'it-IT'
 const myApp = new Vue ({
   el: "#root",
   data: {
-    imgPreUrl: 'https://image.tmdb.org/t/p/w500',
+    imgPreUrl: 'https://image.tmdb.org/t/p/w342',
     movies: [],
     tvShows: [],
     query: '',
@@ -32,7 +46,7 @@ const myApp = new Vue ({
   },
   methods: {
 
-    searchMovie : function(){
+    searchMovie(){
       // ricerca film
       axios.get(apiUrl + '/search/movie', {
         params: {
@@ -47,7 +61,25 @@ const myApp = new Vue ({
         this.movies.forEach(movie => {
           movie.vote_average = Math.ceil(movie.vote_average / 2);
         });
+      });
+    },
+
+    searchTvShows(){
+      //ricerca serie tv
+      axios.get(apiUrl + '/search/tv', {
+        params: {
+          'api_key': apiKey,
+          language: language,
+          query: this.query
+        }
       })
+      .then((r) => {
+        console.log(r);
+        this.tvShows = [...r.data.results];
+        this.tvShows.forEach(tv => {
+          tv.vote_average = Math.ceil(tv.vote_average / 2);
+        });
+      });
     },
 
     flagNotFound(e){
