@@ -12,6 +12,7 @@ body {
 
 .white {
   color: white;
+  font-size: 1rem;
 }
 
 .container {
@@ -54,7 +55,6 @@ main {
     justify-content: center;
     align-items: center;
     flex-wrap: wrap;
-    padding: 40px 0;
 }
 
 .cards-container .title {
@@ -97,7 +97,7 @@ main {
 .card h3 {
     margin: 10px 0;
     color: white;
-    font-size: 20px;
+    font-size: 18px;
     text-transform: uppercase;
 }
 
@@ -122,4 +122,7 @@ main {
 .card > span.overview {
   overflow: hidden;
   text-overflow: ellipsis;
+  display: -webkit-box;
+   -webkit-line-clamp: 6; /* number of lines to show */
+   -webkit-box-orient: vertical;
 }
