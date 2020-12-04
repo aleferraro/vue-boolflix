@@ -1,5 +1,8 @@
 /* Usable */
 
+.white {
+  color: white;
+}
 
 .subtitle {
   color: white;
@@ -71,6 +74,8 @@ main {
 .cards-container .title {
   flex-basis: 100%;
   margin: 1rem;
+  display: flex;
+  align-items: center;
 }
 
 .card {
@@ -126,10 +131,5 @@ main {
 .card > span.overview {
   position: relative;
   min-height: 50px;
-  max-height: 100px;
   overflow: auto;
-  /* text-overflow: ellipsis;
-  display: -webkit-box;
-   -webkit-line-clamp: 4;
-   -webkit-box-orient: vertical; */
 }

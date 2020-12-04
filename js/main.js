@@ -47,6 +47,7 @@ const myApp = new Vue ({
     movies: [],
     tvShows: [],
     genres: [],
+    selectedGenre: 'all',
     query: '',
   },
   mounted: function(){
@@ -93,6 +94,7 @@ const myApp = new Vue ({
                 movie.cast.push(person.name);
               }
             })
+            myApp.$forceUpdate();
           })
           //aggiunge a ogni film la proprietà genere
           movie.genre = [];
@@ -134,9 +136,12 @@ const myApp = new Vue ({
           })
           .then((r) => {
             r.data.cast.forEach(person => {
-              tv.cast.push(person.name)
+              if (tv.cast.length < 5){
+                tv.cast.push(person.name)
+              }
             })
           })
+          myApp.$forceUpdate();
           //aggiunge a ogni serie tv la proprietà genere
           tv.genre = [];
           this.genres.forEach(genre => {
@@ -150,11 +155,34 @@ const myApp = new Vue ({
       });
     },
 
+    movieImage(movie){
+      if(movie.poster_path){
+        return this.imgPreUrl + movie.poster_path
+      } else if (movie.backdrop_path) {
+        return this.imgPreUrl + movie.backdrop_path
+      } else {
+        return "img/placeholder-image.jpg"
+      }
+    },
+
     flagNotFound(e){
       e.target.src = 'img/flags/not_found.png'
-    }
-  },
-  computed: {
+    },
 
+    filterMovieGenre() {
+      if(this.selectedGenre == 'all'){
+        return this.movies
+      } else {
+        return  this.movies.filter(movie => movie.genre.includes(this.selectedGenre))
+      }
+    },
+
+    filterTvGenre() {
+      if(this.selectedGenre == 'all'){
+        return this.tvShows
+      } else {
+        return  this.tvShows.filter(tv => tv.genre.includes(this.selectedGenre))
+      }
+    },
   }
 })

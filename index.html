@@ -30,6 +30,17 @@
       <header>
         <div class="container nav">
           <h1>BOOLFLIX</h1>
+
+          <div v-if="movies.length > 0 | tvShows.length > 0">
+            <label for="genre" class="white">Filtra per genere</label>
+            <select v-model="selectedGenre" @onchange="filterMovieGenre(); filterTvGenre()" name="genre">
+              <option value="all">Tutti</option>
+              <template v-for="genre in genres">
+                <option :value="genre.name">{{ genre.name }}</option>
+              </template>
+            </select>
+          </div>
+
           <div action="search">
             <input v-model="query" @keyup.enter="searchMovie(); searchTvShows();" type="text" placeholder="cerca film o serie tv">
             <button @click="searchMovie(); searchTvShows();">
@@ -41,13 +52,15 @@
       <main>
         <!-- Contiene i film -->
         <div class="cards-container container">
-          <h1 class="title" v-if="movies.length > 0">Film</h1>
+          <div v-if="movies.length > 0" class="title">
+            <h1>Film</h1>
 
-          <div v-for="movie in movies" class="card">
 
-            <img class="poster" v-if="movie.poster_path" :src="imgPreUrl + movie.poster_path" :alt="'poster ' + movie.title">
-            <img class="poster" v-else-if="movie.backdrop_path" :src="imgPreUrl + movie.backdrop_path" :alt="'poster ' + movie.title">
-            <img class="poster" v-else src="img/placeholder-image.jpg" alt="Image not found">
+          </div>
+
+          <div v-for="movie in filterMovieGenre()" class="card">
+
+            <img class="poster" :src="movieImage(movie)" :alt="'poster ' + movie.title">
 
             <h3>{{ movie.title }}</h3>
             <span v-if="movie.original_title !== movie.title" class="originalTitle grey"><span class="subtitle">Titolo Originale: </span>"{{ movie.original_title }}"</span>
@@ -80,11 +93,9 @@
         <div class="cards-container container">
           <h1 class="title" v-if="tvShows.length > 0">Serie TV</h1>
 
-          <div v-for="tvShow in tvShows" class="card">
+          <div v-for="tvShow in filterTvGenre()" class="card">
 
-            <img class="poster" v-if="tvShow.poster_path" :src="imgPreUrl + tvShow.poster_path" :alt="'poster ' + tvShow.name">
-            <img class="poster" v-else-if="tvShow.backdrop_path" :src="imgPreUrl + tvShow.backdrop_path" :alt="'poster ' + tvShow.name">
-            <img class="poster" v-else src="img/placeholder-image.jpg" alt="Image not found">
+            <img class="poster" :src="movieImage(tvShow)" :alt="'poster ' + tvShow.name">
 
             <h3>{{ tvShow.name }}</h3>
             <span v-if="tvShow.original_name !== tvShow.name" class="originalTitle grey"><span class="subtitle">Titolo Originale: </span>"{{ tvShow.original_name }}"</span>
@@ -106,6 +117,9 @@
             </template>
             <span v-if="tvShow.genre.length >= 1" class="grey">
               <span class="subtitle">Genere: </span>{{ tvShow.genre.join(', ') }}
+            </span>
+            <span class="grey">
+              <span class="subtitle">Cast: </span>{{ tvShow.cast.join(', ') }}
             </span>
           </div>
         </div>
