@@ -19,13 +19,20 @@ In questa milestone come prima cosa aggiungiamo la copertina del film o della se
 Esempio di URL che torna la copertina di BORIS:
 https://image.tmdb.org/t/p/w185/s2VDcsMh9ZhjFUxw77uCFDpTuXp.jpg
 
-
 Milestone 4
 
 Trasformiamo quello che abbiamo fatto fino ad ora in una vera e propria webapp, creando un layout completo simil-Netflix:
 - Un header che contiene logo e search bar
 - Dopo aver ricercato qualcosa nella searchbar, i risultati appaiono sotto forma di “card” in cui lo sfondo è rappresentato dall’immagine di copertina (consiglio la poster_path con w342)
 - Andando con il mouse sopra una card (on hover), appaiono le informazioni aggiuntive già prese nei punti precedenti più la overview
+
+Milestone 5 (Opzionale)
+
+Partendo da un film o da una serie, richiedere all'API quali sono gli attori che fanno parte del cast aggiungendo alla nostra scheda Film / Serie SOLO i primi 5 restituiti dall’API con Nome e Cognome, e i generi associati al film con questo schema: “Genere 1, Genere 2, …”.
+
+Milestone 6 (Opzionale)
+
+Creare una lista di generi richiedendo quelli disponibili all'API e creare dei filtri con i generi tv e movie per mostrare/nascondere le schede ottenute con la ricerca.
 
 */
 
@@ -39,10 +46,19 @@ const myApp = new Vue ({
     imgPreUrl: 'https://image.tmdb.org/t/p/w342',
     movies: [],
     tvShows: [],
+    genres: [],
     query: '',
   },
   mounted: function(){
-
+    axios.get(apiUrl + '/genre/movie/list', {
+      params: {
+        'api_key': apiKey
+      }
+    })
+    .then((r) => {
+      this.genres = [...r.data.genres];
+      console.log('genres', this.genres);
+    })
   },
   methods: {
 
@@ -57,10 +73,38 @@ const myApp = new Vue ({
       })
       .then((r) => {
         console.log(r);
+        // crea un array di film
         this.movies = [...r.data.results];
         this.movies.forEach(movie => {
+          //trasforma il voto di ogni film in un numero intero tra 1 e 5
           movie.vote_average = Math.ceil(movie.vote_average / 2);
+          //aggiunge a ogni film la proprietà cast
+          movie.cast = [];
+          axios.get(apiUrl + '/movie/' + movie.id + '/credits', {
+            params: {
+              'api_key': apiKey,
+              language: language
+            }
+          })
+          .then((r) => {
+            // movie.cast = [...r.data.cast];
+            r.data.cast.forEach(person => {
+              if(movie.cast.length < 5){
+                movie.cast.push(person.name);
+              }
+            })
+          })
+          //aggiunge a ogni film la proprietà genere
+          movie.genre = [];
+          this.genres.forEach(genre => {
+            movie.genre_ids.forEach(genreId => {
+              if(genreId == genre.id){
+                movie.genre.push(genre.name);
+              }
+            })
+          })
         });
+        console.log('movies', this.movies);
       });
     },
 
@@ -75,9 +119,33 @@ const myApp = new Vue ({
       })
       .then((r) => {
         console.log(r);
+        //crea un array di seie tv
         this.tvShows = [...r.data.results];
         this.tvShows.forEach(tv => {
+          //trasforma il voto di ogni serie tv in un numero intero tra 1 e 5
           tv.vote_average = Math.ceil(tv.vote_average / 2);
+          //aggiunge a ogni film la proprietà cast
+          tv.cast = [];
+          axios.get(apiUrl + '/tv/' + tv.id + '/credits', {
+            params: {
+              'api_key': apiKey,
+              language: language
+            }
+          })
+          .then((r) => {
+            r.data.cast.forEach(person => {
+              tv.cast.push(person.name)
+            })
+          })
+          //aggiunge a ogni serie tv la proprietà genere
+          tv.genre = [];
+          this.genres.forEach(genre => {
+            tv.genre_ids.forEach(genreId => {
+              if(genreId == genre.id){
+                tv.genre.push(genre.name);
+              }
+            })
+          })
         });
       });
     },
