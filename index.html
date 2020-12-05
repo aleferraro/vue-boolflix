@@ -33,7 +33,7 @@
 
           <div v-if="movies.length > 0 | tvShows.length > 0">
             <label for="genre" class="white">Filtra per genere</label>
-            <select v-model="selectedGenre" @onchange="filterMovieGenre(); filterTvGenre()" name="genre">
+            <select v-model="selectedGenre" @onchange="filterMovieGenre(); filterTvGenre();" name="genre">
               <option value="all">Tutti</option>
               <template v-for="genre in genres">
                 <option :value="genre.name">{{ genre.name }}</option>
@@ -51,76 +51,120 @@
       </header>
       <main>
         <!-- Contiene i film -->
-        <div class="cards-container container">
-          <div v-if="movies.length > 0" class="title">
-            <h1>Film</h1>
+        <div class="container">
 
+          <h1 v-if="filterMovieGenre().length > 0" class="title">Film</h1>
 
-          </div>
+          <div class="cards-container">
+            <div v-for="movie in filterMovieGenre()" class="card">
 
-          <div v-for="movie in filterMovieGenre()" class="card">
+              <img class="poster" :src="movieImage(movie)" :alt="'poster ' + movie.title">
 
-            <img class="poster" :src="movieImage(movie)" :alt="'poster ' + movie.title">
+              <h3>{{ movie.title }}</h3>
 
-            <h3>{{ movie.title }}</h3>
-            <span v-if="movie.original_title !== movie.title" class="originalTitle grey"><span class="subtitle">Titolo Originale: </span>"{{ movie.original_title }}"</span>
-            <span class="grey"><span class="subtitle">Lingua: </span>
-              <img @error="flagNotFound" class="flagIcon" :src="'img/flags/' + movie.original_language + '.svg'" :alt="movie.original_language">
-            </span>
-            <span class="grey">
-              <span class="vote subtitle">Voto: </span>
-              <template v-for="n in 5">
-                <i v-if="n <= movie.vote_average" class="fas fa-star"></i>
-                <i v-else="n > movie.vote_average" class="far fa-star"></i>
-              </template>
-            </span>
-            <template v-if="movie.overview">
-              <span class="subtitle">Overview:</span>
-              <span class="overview grey">
-                {{ movie.overview }}
+              <span v-if="movie.original_title !== movie.title" class="originalTitle grey">
+                <span class="subtitle">Titolo Originale: </span>
+                "{{ movie.original_title }}"
               </span>
-            </template>
-            <span v-if="movie.genre.length >= 1" class="grey">
-              <span class="subtitle">Genere: </span>{{ movie.genre.join(', ') }}
-            </span>
-            <span class="grey">
-              <span class="subtitle">Cast: </span>{{ movie.cast.join(', ') }}
-            </span>
+
+              <span class="grey">
+                <span class="subtitle">Lingua: </span>
+                <img @error="flagNotFound" class="flagIcon" :src="'img/flags/' + movie.original_language + '.svg'" :alt="movie.original_language">
+              </span>
+
+              <span class="grey">
+                <span class="vote subtitle">Voto: </span>
+                <template v-for="n in 5">
+                  <span v-if="n < movie.vote_average">
+                    <i class="fas fa-star"></i>
+                  </span>
+                  <span class="halfStar" v-else-if="n > movie.vote_average && n-1 < movie.vote_average">
+                    <i :class="'w-' + Math.floor((movie.vote_average - (n - 1)) * 100)" class="fas fa-star top"></i>
+                    <i class="far fa-star bottom"></i>
+                  </span>
+                  <span v-else>
+                    <i class="far fa-star"></i>
+                  </span>
+                </template>
+              </span>
+
+              <template v-if="movie.overview">
+                <span class="subtitle">Overview:</span>
+                <span class="overview grey">
+                  {{ movie.overview }}
+                </span>
+              </template>
+
+              <span v-if="movie.genre.length >= 1" class="grey">
+                <span class="subtitle">Genere: </span>
+                {{ movie.genre.join(', ') }}
+              </span>
+
+              <span class="grey">
+                <span class="subtitle">Cast: </span>
+                {{ movie.cast.join(', ') }}
+              </span>
+
+            </div>
           </div>
         </div>
 
         <!-- Contiene le serie TV -->
-        <div class="cards-container container">
-          <h1 class="title" v-if="tvShows.length > 0">Serie TV</h1>
+        <div class="container">
 
-          <div v-for="tvShow in filterTvGenre()" class="card">
+          <h1 class="title" v-if="filterTvGenre().length > 0">Serie TV</h1>
 
-            <img class="poster" :src="movieImage(tvShow)" :alt="'poster ' + tvShow.name">
+          <div class="cards-container">
+            <div v-for="tvShow in filterTvGenre()" class="card">
 
-            <h3>{{ tvShow.name }}</h3>
-            <span v-if="tvShow.original_name !== tvShow.name" class="originalTitle grey"><span class="subtitle">Titolo Originale: </span>"{{ tvShow.original_name }}"</span>
-            <span class="grey"><span class="subtitle">Lingua: </span>
-              <img @error="flagNotFound" class="flagIcon" :src="'img/flags/' + tvShow.original_language + '.svg'" :alt="tvShow.original_language">
-            </span>
-            <span class="grey">
-              <span class="vote subtitle">Voto: </span>
-              <template v-for="n in 5">
-                <i v-if="n <= tvShow.vote_average" class="fas fa-star"></i>
-                <i v-else="n > tvShow.vote_average" class="far fa-star"></i>
-              </template>
-            </span>
-            <template v-if="tvShow.overview">
-              <span class="subtitle">Overview:</span>
-              <span class="overview grey">
-                {{ tvShow.overview }}
+              <img class="poster" :src="movieImage(tvShow)" :alt="'poster ' + tvShow.name">
+
+              <h3>{{ tvShow.name }}</h3>
+
+              <span v-if="tvShow.original_name !== tvShow.name" class="originalTitle grey">
+                <span class="subtitle">Titolo Originale: </span>
+                "{{ tvShow.original_name }}"
               </span>
-            </template>
-            <span v-if="tvShow.genre.length >= 1" class="grey">
-              <span class="subtitle">Genere: </span>{{ tvShow.genre.join(', ') }}
-            </span>
-            <span class="grey">
-              <span class="subtitle">Cast: </span>{{ tvShow.cast.join(', ') }}
-            </span>
+
+              <span class="grey">
+                <span class="subtitle">Lingua: </span>
+                <img @error="flagNotFound" class="flagIcon" :src="'img/flags/' + tvShow.original_language + '.svg'" :alt="tvShow.original_language">
+              </span>
+
+              <span class="grey">
+                <span class="vote subtitle">Voto: </span>
+                <template v-for="n in 5">
+                  <span v-if="n < tvShow.vote_average">
+                    <i class="fas fa-star"></i>
+                  </span>
+                  <span class="halfStar" v-else-if="n > tvShow.vote_average && n-1 < tvShow.vote_average">
+                    <i :class="'w-' + Math.floor((tvShow.vote_average - (n - 1)) * 100)" class="fas fa-star top"></i>
+                    <i class="far fa-star bottom"></i>
+                  </span>
+                  <span v-else>
+                    <i class="far fa-star"></i>
+                  </span>
+                </template>
+              </span>
+
+              <template v-if="tvShow.overview">
+                <span class="subtitle">Overview:</span>
+                <span class="overview grey">
+                  {{ tvShow.overview }}
+                </span>
+              </template>
+
+              <span v-if="tvShow.genre.length >= 1" class="grey">
+                <span class="subtitle">Genere: </span>
+                {{ tvShow.genre.join(', ') }}
+              </span>
+
+              <span class="grey">
+                <span class="subtitle">Cast: </span>
+                {{ tvShow.cast.join(', ') }}
+              </span>
+
+            </div>
           </div>
         </div>
       </div>

@@ -59,7 +59,91 @@ const myApp = new Vue ({
     .then((r) => {
       this.genres = [...r.data.genres];
       console.log('genres', this.genres);
+    });
+
+    //cerca i film popolari
+    axios.get(apiUrl + '/movie/popular', {
+      params: {
+        'api_key': apiKey,
+        language: language
+      }
     })
+    .then((r) => {
+      this.movies = [...r.data.results];
+      this.movies.forEach(movie => {
+        //trasforma il voto di ogni film in un numero intero tra 1 e 5
+        movie.vote_average = movie.vote_average / 2;
+        //aggiunge a ogni film la proprietà cast
+        movie.cast = [];
+        axios.get(apiUrl + '/movie/' + movie.id + '/credits', {
+          params: {
+            'api_key': apiKey,
+            language: language
+          }
+        })
+        .then((r) => {
+          // movie.cast = [...r.data.cast];
+          r.data.cast.forEach(person => {
+            if(movie.cast.length < 5){
+              movie.cast.push(person.name);
+            }
+          })
+          myApp.$forceUpdate();
+        })
+        //aggiunge a ogni film la proprietà genere
+        movie.genre = [];
+        this.genres.forEach(genre => {
+          movie.genre_ids.forEach(genreId => {
+            if(genreId == genre.id){
+              movie.genre.push(genre.name);
+            }
+          })
+        })
+      });
+    });
+
+    //cerca le serie popolari
+    axios.get(apiUrl + '/tv/popular', {
+      params: {
+        'api_key': apiKey,
+        language: language
+      }
+    })
+    .then((r) => {
+      console.log(r);
+      //crea un array di seie tv
+      this.tvShows = [...r.data.results];
+      this.tvShows.forEach(tv => {
+        //trasforma il voto di ogni serie tv in un numero intero tra 1 e 5
+        tv.vote_average = tv.vote_average / 2;
+        //aggiunge a ogni film la proprietà cast
+        tv.cast = [];
+        axios.get(apiUrl + '/tv/' + tv.id + '/credits', {
+          params: {
+            'api_key': apiKey,
+            language: language
+          }
+        })
+        .then((r) => {
+          r.data.cast.forEach(person => {
+            if (tv.cast.length < 5){
+              tv.cast.push(person.name)
+            }
+          })
+        })
+        myApp.$forceUpdate();
+        //aggiunge a ogni serie tv la proprietà genere
+        tv.genre = [];
+        this.genres.forEach(genre => {
+          tv.genre_ids.forEach(genreId => {
+            if(genreId == genre.id){
+              tv.genre.push(genre.name);
+            }
+          })
+        })
+      });
+    });
+
   },
   methods: {
 
@@ -78,7 +162,7 @@ const myApp = new Vue ({
         this.movies = [...r.data.results];
         this.movies.forEach(movie => {
           //trasforma il voto di ogni film in un numero intero tra 1 e 5
-          movie.vote_average = Math.ceil(movie.vote_average / 2);
+          movie.vote_average = movie.vote_average / 2;
           //aggiunge a ogni film la proprietà cast
           movie.cast = [];
           axios.get(apiUrl + '/movie/' + movie.id + '/credits', {
@@ -125,7 +209,7 @@ const myApp = new Vue ({
         this.tvShows = [...r.data.results];
         this.tvShows.forEach(tv => {
           //trasforma il voto di ogni serie tv in un numero intero tra 1 e 5
-          tv.vote_average = Math.ceil(tv.vote_average / 2);
+          tv.vote_average = tv.vote_average / 2;
           //aggiunge a ogni film la proprietà cast
           tv.cast = [];
           axios.get(apiUrl + '/tv/' + tv.id + '/credits', {
