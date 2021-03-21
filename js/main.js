@@ -110,7 +110,7 @@ const myApp = new Vue ({
         movie.genre = [];
         this.genres.forEach(genre => {
           movie.genre_ids.forEach(genreId => {
-            if(genreId == genre.id){
+            if(genreId === genre.id){
               movie.genre.push(genre.name);
             }
           })
@@ -153,7 +153,7 @@ const myApp = new Vue ({
         tv.genre = [];
         this.genres.forEach(genre => {
           tv.genre_ids.forEach(genreId => {
-            if(genreId == genre.id){
+            if(genreId === genre.id){
               tv.genre.push(genre.name);
             }
           })
@@ -201,7 +201,7 @@ const myApp = new Vue ({
           movie.genre = [];
           this.genres.forEach(genre => {
             movie.genre_ids.forEach(genreId => {
-              if(genreId == genre.id){
+              if(genreId === genre.id){
                 movie.genre.push(genre.name);
               }
             })
@@ -248,7 +248,7 @@ const myApp = new Vue ({
           tv.genre = [];
           this.genres.forEach(genre => {
             tv.genre_ids.forEach(genreId => {
-              if(genreId == genre.id){
+              if(genreId === genre.id){
                 tv.genre.push(genre.name);
               }
             })
@@ -278,7 +278,7 @@ const myApp = new Vue ({
       this.movies.forEach(movie => {
         movie.genre.forEach(movieGenre => {
           this.genres.forEach(genre =>{
-            if(movieGenre == genre.name){
+            if(movieGenre === genre.name){
               if(this.filterList.indexOf(genre) === -1){
                 this.filterList.push(genre)
               }
@@ -289,7 +289,7 @@ const myApp = new Vue ({
       this.tvShows.forEach(tv => {
         tv.genre_ids.forEach(tvGenre => {
           this.genres.forEach(genre =>{
-            if(tvGenre == genre.id){
+            if(tvGenre === genre.id){
               if(this.filterList.indexOf(genre) === -1){
                 this.filterList.push(genre)
               }
@@ -300,7 +300,7 @@ const myApp = new Vue ({
     },
 
     filterMovieGenre() {
-      if(this.selectedGenre == 'all'){
+      if(this.selectedGenre === 'all'){
         return this.movies
       } else {
         return  this.movies.filter(movie => movie.genre.includes(this.selectedGenre))
@@ -308,7 +308,7 @@ const myApp = new Vue ({
     },
 
     filterTvGenre() {
-      if(this.selectedGenre == 'all'){
+      if(this.selectedGenre === 'all'){
         return this.tvShows
       } else {
         return  this.tvShows.filter(tv => tv.genre.includes(this.selectedGenre))

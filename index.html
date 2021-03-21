@@ -31,9 +31,9 @@
         <div class="container nav">
           <h1>BOOLFLIX</h1>
 
-          <div v-if="movies.length > 0 | tvShows.length > 0">
+          <div v-if="((movies.length > 0) | (tvShows.length > 0))">
             <label for="genre" class="white">Filtra per genere</label>
-            <select v-model="selectedGenre" @onchange="filterMovieGenre(); filterTvGenre();" name="genre">
+            <select id="genre" v-model="selectedGenre" @onchange="filterMovieGenre(); filterTvGenre();" name="genre">
               <option value="all">Tutti</option>
               <template v-for="genre in filterList">
                 <option :value="genre.name">{{ genre.name }}</option>
@@ -41,7 +41,7 @@
             </select>
           </div>
 
-          <div action="search">
+          <div class="search">
             <input v-model="query" @keyup.enter="searchMovie(); searchTvShows();" type="text" placeholder="cerca film o serie tv">
             <button @click="searchMovie(); searchTvShows();">
               <i class="fas fa-search"></i>
@@ -167,8 +167,8 @@
             </div>
           </div>
         </div>
-      </div>
-    </main>
+      </main>
+    </div>
 
     <!-- Custom JavaScript -->
     <script src="js/main.js" charset="utf-8"></script>
