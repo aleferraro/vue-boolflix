@@ -276,9 +276,9 @@ const myApp = new Vue ({
       this.selectedGenre = 'all';
       this.filterList = [];
       this.movies.forEach(movie => {
-        movie.genre.forEach(movieGenre => {
+        movie.genre_ids.forEach(movieGenre => {
           this.genres.forEach(genre =>{
-            if(movieGenre === genre.name){
+            if(movieGenre === genre.id){
               if(this.filterList.indexOf(genre) === -1){
                 this.filterList.push(genre)
               }
