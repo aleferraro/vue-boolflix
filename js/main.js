@@ -47,10 +47,13 @@ const myApp = new Vue ({
     movies: [],
     tvShows: [],
     genres: [],
+    filterList: [],
     selectedGenre: 'all',
     query: '',
   },
   mounted: function(){
+
+    // crea una lista di generi
     axios.get(apiUrl + '/genre/movie/list', {
       params: {
         'api_key': apiKey
@@ -58,8 +61,21 @@ const myApp = new Vue ({
     })
     .then((r) => {
       this.genres = [...r.data.genres];
-      console.log('genres', this.genres);
     });
+    axios.get(apiUrl + '/genre/tv/list', {
+      params: {
+        'api_key': apiKey
+      }
+    })
+    .then((r) => {
+      r.data.genres.forEach(tvGenre => {
+        if(this.genres.indexOf(tvGenre) === -1){
+          this.genres.push(tvGenre);
+        }
+      })
+      // console.log('genres', this.genres);
+      myApp.$forceUpdate();
+    })
 
     //cerca i film popolari
     axios.get(apiUrl + '/movie/popular', {
@@ -100,6 +116,7 @@ const myApp = new Vue ({
           })
         })
       });
+      this.optionFilter();
     });
 
     //cerca le serie popolari
@@ -110,7 +127,7 @@ const myApp = new Vue ({
       }
     })
     .then((r) => {
-      console.log(r);
+      // console.log(r);
       //crea un array di seie tv
       this.tvShows = [...r.data.results];
       this.tvShows.forEach(tv => {
@@ -157,7 +174,7 @@ const myApp = new Vue ({
         }
       })
       .then((r) => {
-        console.log(r);
+        // console.log(r);
         // crea un array di film
         this.movies = [...r.data.results];
         this.movies.forEach(movie => {
@@ -190,7 +207,8 @@ const myApp = new Vue ({
             })
           })
         });
-        console.log('movies', this.movies);
+        this.optionFilter();
+        // console.log('movies', this.movies);
       });
     },
 
@@ -204,7 +222,7 @@ const myApp = new Vue ({
         }
       })
       .then((r) => {
-        console.log(r);
+        // console.log(r);
         //crea un array di seie tv
         this.tvShows = [...r.data.results];
         this.tvShows.forEach(tv => {
@@ -236,6 +254,7 @@ const myApp = new Vue ({
             })
           })
         });
+        this.optionFilter();
       });
     },
 
@@ -251,6 +270,33 @@ const myApp = new Vue ({
 
     flagNotFound(e){
       e.target.src = 'img/flags/not_found.png'
+    },
+
+    optionFilter(){
+      this.selectedGenre = 'all';
+      this.filterList = [];
+      this.movies.forEach(movie => {
+        movie.genre.forEach(movieGenre => {
+          this.genres.forEach(genre =>{
+            if(movieGenre == genre.name){
+              if(this.filterList.indexOf(genre) === -1){
+                this.filterList.push(genre)
+              }
+            }
+          })
+        })
+      })
+      this.tvShows.forEach(tv => {
+        tv.genre_ids.forEach(tvGenre => {
+          this.genres.forEach(genre =>{
+            if(tvGenre == genre.id){
+              if(this.filterList.indexOf(genre) === -1){
+                this.filterList.push(genre)
+              }
+            }
+          })
+        })
+      })
     },
 
     filterMovieGenre() {

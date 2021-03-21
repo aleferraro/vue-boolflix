@@ -35,7 +35,7 @@
             <label for="genre" class="white">Filtra per genere</label>
             <select v-model="selectedGenre" @onchange="filterMovieGenre(); filterTvGenre();" name="genre">
               <option value="all">Tutti</option>
-              <template v-for="genre in genres">
+              <template v-for="genre in filterList">
                 <option :value="genre.name">{{ genre.name }}</option>
               </template>
             </select>
